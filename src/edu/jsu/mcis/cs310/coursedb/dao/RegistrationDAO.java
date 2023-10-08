@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class RegistrationDAO {
     
-    // INSERT YOUR CODE HERE
+   final String QUERY_LIST = "SELECT * FROM registration WHERE studentid = ? AND termid = ?";
     
     private final DAOFactory daoFactory;
     
@@ -122,8 +122,14 @@ public class RegistrationDAO {
             
             if (conn.isValid(0)) {
                 
-                // INSERT YOUR CODE HERE
+                ps = conn.prepareStatement(QUERY_LIST);
+                ps.setInt(1, studentid);
+                ps.setInt(2, termid);
                 
+                rs = ps.executeQuery();
+                
+                rs.toString();
+                //https://notes.andywu.tw/en/2018/java-convert-sql-resultset-to-json-array/
             }
             
         }
