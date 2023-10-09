@@ -4,10 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import com.github.cliftonlabs.json_simple.*;
 
 public class SectionDAO {
     
-    // INSERT YOUR CODE HERE
+    private static final String QUERY_FIND = "SELECT FROM section WHERE studentid = ? AND termid = ? AND crn = ? ORDER BY crn";
     
     private final DAOFactory daoFactory;
     
@@ -21,7 +22,7 @@ public class SectionDAO {
         
         PreparedStatement ps = null;
         ResultSet rs = null;
-        ResultSetMetaData rsmd = null;
+        JsonArray jsonarray = new JsonArray();
         
         try {
             
@@ -29,8 +30,26 @@ public class SectionDAO {
             
             if (conn.isValid(0)) {
                 
-                // INSERT YOUR CODE HERE
+                ps = conn.prepareStatement(QUERY_FIND);
+                ps.setInt(1, termid);
+                ps.setString(2, subjectid);
+                ps.setString(3, num);
                 
+                try(ResultSet resultset = ps.executeQuery())
+                {
+                    while (resultset.next())
+                    {
+                        JsonObject sectionInfo = new JsonObject();
+                        sectionInfo.put("crn", resultset.getInt("crn"));
+                        sectionInfo.put("studentid", resultset.getString("studentid"));
+                        sectionInfo.put("num", resultset.getString("num"));
+                        
+                        jsonarray.add(sectionInfo);
+                    }
+                }
+                
+                
+                result = jsonarray.toJson();
             }
             
         }
